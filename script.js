@@ -28,16 +28,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const imageUrl = `https://tse1.mm.bing.net/th?q=${encodedTerm}`;
                 const linkUrl = `detail.html?q=${encodedTerm}`; 
 
-                const cardHTML = `
-                    <article class="content-card">
-                        <a href="${linkUrl}">
-                            <img src="${imageUrl}" alt="${keyword}" loading="lazy">
-                            <div class="content-card-body">
-                                <h3>${keyword}</h3>
-                            </div>
-                        </a>
+               const cardHTML = `
+                <article class="content-card">
+                    <a href="<span class="math-inline">\{linkUrl\}"\>
+                    <img src\="</span>{imageUrl}" alt="<span class="math-inline">\{keyword\}" loading\="lazy"\>
+                    <div class\="content\-card\-body"\>
+                        \{/\* Ubah baris ini \*/\}
+                        <h3\></span>{capitalizeEachWord(keyword)}</h3>
+                                    </div>
+                                </a>
                     </article>
-                `;
+                    `;
                 contentContainer.innerHTML += cardHTML;
             });
 
@@ -99,3 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mulai semuanya
     initialize();
 });
+
+function capitalizeEachWord(str) {
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
