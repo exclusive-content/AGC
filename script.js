@@ -1,34 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Variabel untuk mengelola state
+    let allKeywords = [];
+    let currentIndex = 0;
+    const batchSize = 15;
+    let isLoading = false;
+
+    // Elemen DOM
     const contentContainer = document.getElementById('auto-content-container');
+    const loader = document.getElementById('loader');
 
     /**
-     * Fungsi untuk mengambil keywords dari file .txt dan menampilkan di homepage
+     * Fungsi untuk memuat dan menampilkan batch keyword berikutnya.
      */
-    async function loadKeywordsFromFile() {
-        try {
-            const response = await fetch('keyword.txt');
-            if (!response.ok) {
-                throw new Error('Gagal memuat file keyword.txt');
-            }
-            const text = await response.text();
-            
-            // Pisahkan teks menjadi array per baris, dan hapus baris kosong
-            const keywords = text.split('\n').filter(k => k.trim() !== '');
+    function loadNextBatch() {
+        if (isLoading) return;
+        isLoading = true;
+        loader.style.display = 'block';
 
-            if (keywords.length === 0) {
-                contentContainer.innerHTML = '<div class="loading-placeholder">Tidak ada keyword di dalam file.</div>';
-                return;
-            }
-
-            // Kosongkan placeholder loading
-            contentContainer.innerHTML = '';
-            
-            // Buat kartu untuk setiap keyword
-            keywords.forEach(keyword => {
+        // Ambil batch keyword berikutnya dari array allKeywords
+        const batch = allKeywords.slice(currentIndex, currentIndex + batchSize);
+        
+        // Simulasikan sedikit jeda (seperti mengambil dari network) agar loader terlihat
+        setTimeout(() => {
+            batch.forEach(keyword => {
                 const encodedTerm = encodeURIComponent(keyword);
                 const imageUrl = `https://tse1.mm.bing.net/th?q=${encodedTerm}`;
-                // Link mengarah ke halaman detail
                 const linkUrl = `detail.html?q=${encodedTerm}`; 
 
                 const cardHTML = `
@@ -41,17 +38,64 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                     </article>
                 `;
-                
                 contentContainer.innerHTML += cardHTML;
             });
 
-        } catch (error) {
-            console.error('Error:', error);
-            contentContainer.innerHTML = `<div class="loading-placeholder">${error.message}. Pastikan file ada dan dapat diakses.</div>`;
+            // Update index untuk batch berikutnya
+            currentIndex += batch.length;
+            
+            // Sembunyikan loader setelah selesai
+            loader.style.display = 'none';
+            isLoading = false;
+
+            // Jika semua keyword sudah dimuat, hapus event listener scroll
+            if (currentIndex >= allKeywords.length) {
+                window.removeEventListener('scroll', handleInfiniteScroll);
+                loader.style.display = 'none'; // Pastikan loader benar-benar hilang
+            }
+
+        }, 500); // Jeda 0.5 detik
+    }
+
+    /**
+     * Fungsi yang menangani event scroll
+     */
+    function handleInfiniteScroll() {
+        // Cek jika pengguna sudah scroll mendekati bagian bawah halaman
+        // (window.innerHeight + window.scrollY) = posisi bawah viewport
+        // document.documentElement.offsetHeight = tinggi total halaman
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.offsetHeight - 100) {
+            loadNextBatch();
         }
     }
 
-    // Panggil fungsi utama untuk memulai proses
-    loadKeywordsFromFile();
+    /**
+     * Fungsi inisialisasi: mengambil semua keyword dari file.
+     */
+    async function initialize() {
+        try {
+            const response = await fetch('keyword.txt');
+            if (!response.ok) throw new Error('File keyword.txt tidak ditemukan.');
+            
+            const text = await response.text();
+            allKeywords = text.split('\n').filter(k => k.trim() !== '');
 
+            if (allKeywords.length > 0) {
+                // Muat batch pertama
+                loadNextBatch();
+                // Pasang event listener untuk scroll
+                window.addEventListener('scroll', handleInfiniteScroll);
+            } else {
+                contentContainer.innerHTML = '<p>Tidak ada keyword untuk ditampilkan.</p>';
+                loader.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            contentContainer.innerHTML = `<p style="text-align:center; color:red;">${error.message}</p>`;
+            loader.style.display = 'none';
+        }
+    }
+
+    // Mulai semuanya
+    initialize();
 });
