@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     // Variabel untuk mengelola state
     let allKeywords = [];
     let currentIndex = 0;
@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Elemen DOM
     const contentContainer = document.getElementById('auto-content-container');
     const loader = document.getElementById('loader');
+
+    function capitalizeEachWord(str) {
+        return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
 
     /**
      * Fungsi untuk memuat dan menampilkan batch keyword berikutnya.
@@ -20,31 +24,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Ambil batch keyword berikutnya dari array allKeywords
         const batch = allKeywords.slice(currentIndex, currentIndex + batchSize);
-        
+
         // Simulasikan sedikit jeda (seperti mengambil dari network) agar loader terlihat
         setTimeout(() => {
             batch.forEach(keyword => {
                 const encodedTerm = encodeURIComponent(keyword);
                 const imageUrl = `https://tse1.mm.bing.net/th?q=${encodedTerm}`;
-                const linkUrl = `detail.html?q=${encodedTerm}`; 
+                const linkUrl = `detail.html?q=${encodedTerm}`;
 
-               const cardHTML = `
-                <article class="content-card">
-                    <a href="<span class="math-inline">\{linkUrl\}"\>
-                    <img src\="</span>{imageUrl}" alt="<span class="math-inline">\{keyword\}" loading\="lazy"\>
-                    <div class\="content\-card\-body"\>
-                        \{/\* Ubah baris ini \*/\}
-                        <h3\></span>{capitalizeEachWord(keyword)}</h3>
-                                    </div>
-                                </a>
+                const cardHTML = `
+                    <article class="content-card">
+                        <a href="<span class="math-inline">\{linkUrl\}"\>
+<img src\="</span>{imageUrl}" alt="<span class="math-inline">\{keyword\}" loading\="lazy"\>
+<div class\="content\-card\-body"\>
+<h3\></span>{capitalizeEachWord(keyword)}</h3>
+                            </div>
+                        </a>
                     </article>
-                    `;
+                `;
                 contentContainer.innerHTML += cardHTML;
             });
 
             // Update index untuk batch berikutnya
             currentIndex += batch.length;
-            
+
             // Sembunyikan loader setelah selesai
             loader.style.display = 'none';
             isLoading = false;
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('keyword.txt');
             if (!response.ok) throw new Error('File keyword.txt tidak ditemukan.');
-            
+
             const text = await response.text();
             allKeywords = text.split('\n').filter(k => k.trim() !== '');
 
@@ -100,7 +103,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mulai semuanya
     initialize();
 });
-
-function capitalizeEachWord(str) {
-    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-}
