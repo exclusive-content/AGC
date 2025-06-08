@@ -1,4 +1,4 @@
-/* Import font yang lebih modern */
+/* Import font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 /* Reset dan Pengaturan Dasar */
@@ -91,14 +91,6 @@ main {
     gap: 25px;
 }
 
-.loading-placeholder {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem;
-    color: #999;
-    font-size: 1.2rem;
-}
-
 /* Kartu Konten */
 .content-card {
     background-color: #fff;
@@ -136,6 +128,23 @@ main {
     text-decoration: none;
 }
 
+/* Loader untuk Infinite Scroll */
+.loader {
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid #118bee; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+    display: none; /* Sembunyikan secara default */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -148,14 +157,12 @@ footer {
 
 /* --- MOBILE MENU & RESPONSIVE STYLES --- */
 
-/* Sembunyikan checkbox */
 .nav-toggle {
     display: none;
 }
 
-/* Style untuk tombol hamburger */
 .nav-toggle-label {
-    display: none; /* Sembunyikan di desktop */
+    display: none;
     cursor: pointer;
     width: 30px;
     height: 30px;
@@ -191,7 +198,6 @@ footer {
     top: 8px;
 }
 
-/* Animasi Tombol Hamburger menjadi 'X' */
 .nav-toggle:checked + .nav-toggle-label span {
     background-color: transparent;
 }
@@ -206,9 +212,11 @@ footer {
     top: 0;
 }
 
-
 /* Tampilan untuk layar kecil (Mobile) */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
     .logo {
         font-size: 1.5rem;
     }
@@ -242,57 +250,21 @@ footer {
         transform: scaleY(1);
     }
     .hero h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+    .hero p {
+        font-size: 1rem;
     }
     .main-article h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
-}
-
-
-/* Style untuk Halaman Detail */
-.main-article {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 3rem;
-}
-
-.main-article h1 {
-    font-size: 2.8rem;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-    text-transform: capitalize;
-}
-
-.detail-image {
-    margin-bottom: 2rem;
-}
-
-.detail-image img {
-    width: 100%;
-    height: auto;
-    max-height: 500px;
-    object-fit: cover;
-    border-radius: 8px;
-    background-color: #eee;
-}
-
-.article-content p {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    color: #444;
-}
-
-.article-content strong {
-    color: #118bee;
-}
-
-.section-title {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 1rem;
+    .article-content p {
+        font-size: 1rem;
+    }
+    .main-article {
+        padding: 1.5rem;
+    }
+    .section-title {
+        font-size: 1.5rem;
+    }
 }
