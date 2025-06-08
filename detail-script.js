@@ -1,3 +1,7 @@
+function capitalizeEachWord(str) {
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
     const detailTitle = document.getElementById('detail-title');
@@ -19,9 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function populateMainContent(term) {
         const decodedTerm = decodeURIComponent(term).replace(/\+/g, ' ');
-
-        document.title = `${decodedTerm} | DekorInspirasi`;
-        detailTitle.textContent = decodedTerm;
+        const capitalizedTerm = capitalizeEachWord(decodedTerm);
+    
+        // Set judul halaman dan H1
+        document.title = `${capitalizedTerm} | DekorInspirasi`;
+        detailTitle.textContent = capitalizedTerm;
 
         const imageUrl = `https://tse1.mm.bing.net/th?q=${encodeURIComponent(decodedTerm)}&w=800&h=500&c=7&rs=1&p=0`;
         detailImageContainer.innerHTML = `<img src="${imageUrl}" alt="${decodedTerm}">`;
@@ -67,14 +73,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const card = `
                 <article class="content-card">
-                    <a href="${linkUrl}">
-                        <img src="${imageUrl}" alt="${relatedTerm}" loading="lazy">
-                        <div class="content-card-body">
-                            <h3>${relatedTerm}</h3>
-                        </div>
-                    </a>
-                </article>
-            `;
+                    <a href="<span class="math-inline">\{linkUrl\}"\>
+                    <img src\="</span>{imageUrl}" alt="<span class="math-inline">\{relatedTerm\}" loading\="lazy"\>
+                    <div class\="content\-card\-body"\>
+                    \{/\* Ubah baris ini \*/\}
+                    <h3\></span>{capitalizeEachWord(relatedTerm)}</h3>
+                                </div>
+                            </a>
+                        </article>
+                    `;
             relatedPostsContainer.innerHTML += card;
         });
 
